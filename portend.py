@@ -53,9 +53,8 @@ def _check_port(host, port, timeout=1.0):
 			if s:
 				s.close()
 		else:
-			raise IOError("Port %s is in use on %s; perhaps the previous "
-				"httpserver did not shut down properly." %
-				(repr(port), repr(host)))
+			tmpl = "Port {port} is in use on {host}."
+			raise IOError(tmpl.format(**vars()))
 
 
 class Timeout(IOError):
@@ -92,7 +91,7 @@ def wait_for_free_port(host, port, timeout=float('Inf')):
 			# Politely wait.
 			time.sleep(0.1)
 
-	raise Timeout("Port {port} not free on {host}".format(**vars()))
+	raise Timeout("Port {port} not free on {host}.".format(**vars()))
 
 
 def wait_for_occupied_port(host, port, timeout=float('Inf')):
@@ -125,4 +124,4 @@ def wait_for_occupied_port(host, port, timeout=float('Inf')):
 			# port is occupied
 			return
 
-	raise Timeout("Port {port} not bound on {host}".format(**vars))
+	raise Timeout("Port {port} not bound on {host}.".format(**vars))
