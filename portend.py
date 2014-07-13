@@ -44,8 +44,8 @@ def _check_port(host, port, timeout=1.0):
 		s = None
 		try:
 			s = socket.socket(af, socktype, proto)
-			# See http://groups.google.com/group/cherrypy-users/
-			#        browse_frm/thread/bbfe5eb39c904fe0
+			# important that a small timeout is set here to allow the check
+			#  to fail fast.
 			s.settimeout(timeout)
 			s.connect((host, port))
 			s.close()
