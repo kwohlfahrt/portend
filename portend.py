@@ -1,6 +1,6 @@
 import time
 import warnings
-
+import socket
 
 def client_host(server_host):
 	"""Return the host on which a client can connect to the given listener."""
@@ -21,8 +21,6 @@ def check_port(host, port, timeout=1.0):
 		raise ValueError("Host values of '' or None are not allowed.")
 	host = client_host(host)
 	port = int(port)
-
-	import socket
 
 	# AF_INET or AF_INET6 socket
 	# Get the correct address family for our host (allows IPv6 addresses)
