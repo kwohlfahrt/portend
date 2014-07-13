@@ -1,6 +1,8 @@
 import time
-import warnings
 import socket
+import datetime
+
+from jaraco.util import timing
 
 def client_host(server_host):
 	"""Return the host on which a client can connect to the given listener."""
@@ -15,15 +17,17 @@ def client_host(server_host):
 	return server_host
 
 
-def check_port(host, port, timeout=1.0):
-	"""Raise an error if the given port is not free on the given host."""
+def _check_port(host, port, timeout=1.0):
+	"""
+	Raise an error if the given port is not free on the given host.
+	"""
 	if not host:
 		raise ValueError("Host values of '' or None are not allowed.")
 	host = client_host(host)
 	port = int(port)
 
 	# AF_INET or AF_INET6 socket
-	# Get the correct address family for our host (allows IPv6 addresses)
+	# Get the correct address family for host (allows IPv6 addresses)
 	try:
 		info = socket.getaddrinfo(host, port, socket.AF_UNSPEC,
 			socket.SOCK_STREAM)
@@ -54,53 +58,71 @@ def check_port(host, port, timeout=1.0):
 				(repr(port), repr(host)))
 
 
-# Feel free to increase these defaults on slow systems:
-free_port_timeout = 0.1
-occupied_port_timeout = 1.0
+class Timeout(IOError):
+	pass
 
 
-def wait_for_free_port(host, port, timeout=None):
-	"""Wait for the specified port to become free (drop requests)."""
+def wait_for_free_port(host, port, timeout=float('Inf')):
+	"""
+	Wait for the specified port to become free (dropping or rejecting
+	requests). Return when the port is free or raise a Timeout if timeout has
+	elapsed.
+
+	Timeout may be specified in seconds or as a timedelta.
+	If timeout is None or ∞, the routine will run indefinitely.
+	"""
 	if not host:
 		raise ValueError("Host values of '' or None are not allowed.")
-	if timeout is None:
-		timeout = free_port_timeout
 
-	for trial in range(50):
+	if isinstance(timeout, datetime.timedelta):
+		timeout = timeout.total_seconds()
+
+	if timeout is None:
+		# treat None as infinite timeout
+		timeout = float('Inf')
+
+	watch = timing.Stopwatch()
+
+	while watch.split().total_seconds() < timeout:
 		try:
-			# we are expecting a free port, so reduce the timeout
-			check_port(host, port, timeout=timeout)
-		except IOError:
-			# Give the old server thread time to free the port.
-			time.sleep(timeout)
-		else:
+			# Expect a free port, so use a small timeout
+			_check_port(host, port, timeout=0.1)
 			return
+		except IOError:
+			# Politely wait.
+			time.sleep(0.1)
 
-	raise IOError("Port %r not free on %r" % (port, host))
+	raise Timeout("Port {port} not free on {host}".format(**vars()))
 
 
-def wait_for_occupied_port(host, port, timeout=None):
-	"""Wait for the specified port to become active (receive requests)."""
+def wait_for_occupied_port(host, port, timeout=float('Inf')):
+	"""
+	Wait for the specified port to become occupied (accepting requests).
+	Return when the port is occupied or raise a Timeout if timeout has
+	elapsed.
+
+	Timeout may be specified in seconds or as a timedelta.
+	If timeout is None or ∞, the routine will run indefinitely.
+	"""
 	if not host:
 		raise ValueError("Host values of '' or None are not allowed.")
-	if timeout is None:
-		timeout = occupied_port_timeout
 
-	for trial in range(50):
+	if isinstance(timeout, datetime.timedelta):
+		timeout = timeout.total_seconds()
+
+	if timeout is None:
+		# treat None as infinite timeout
+		timeout = float('Inf')
+
+	watch = timing.Stopwatch()
+
+	while watch.split().total_seconds() < timeout:
 		try:
-			check_port(host, port, timeout=timeout)
+			_check_port(host, port, timeout=.5)
+			# Politely wait
+			time.sleep(0.1)
 		except IOError:
 			# port is occupied
 			return
-		else:
-			time.sleep(timeout)
 
-	if host == client_host(host):
-		raise IOError("Port %r not bound on %r" % (port, host))
-
-	# On systems where a loopback interface is not available and the
-	#  server is bound to all interfaces, it's difficult to determine
-	#  whether the server is in fact occupying the port. In this case,
-	# just issue a warning and move on. See issue #1100.
-	msg = "Unable to verify that the server is bound on %r" % port
-	warnings.warn(msg)
+	raise Timeout("Port {port} not bound on {host}".format(**vars))
