@@ -1,0 +1,4 @@
+1.0
+===
+
+Initial release based on utilities in CherryPy 3.5.
