@@ -16,6 +16,9 @@ setup_params = dict(
 	long_description=long_description,
 	url="https://bitbucket.org/jaraco/portend",
 	packages=setuptools.find_packages(),
+	install_requires=[
+		'jaraco.timing',
+	],
 	setup_requires=[
 		'hgtools',
 		'pytest-runner',

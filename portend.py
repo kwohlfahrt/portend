@@ -2,7 +2,7 @@ import time
 import socket
 import datetime
 
-from jaraco.util import timing
+from jaraco import timing
 
 def client_host(server_host):
 	"""Return the host on which a client can connect to the given listener."""
