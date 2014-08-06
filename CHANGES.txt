@@ -1,3 +1,13 @@
+1.1
+===
+
+Renamed functions:
+
+ - wait_for_occupied_port: occupied
+ - wait_for_free_port: free
+
+The original names are kept as aliases for now.
+
 1.0
 ===
 

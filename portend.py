@@ -62,7 +62,7 @@ class Timeout(IOError):
 	pass
 
 
-def wait_for_free_port(host, port, timeout=float('Inf')):
+def free(host, port, timeout=float('Inf')):
 	"""
 	Wait for the specified port to become free (dropping or rejecting
 	requests). Return when the port is free or raise a Timeout if timeout has
@@ -93,9 +93,10 @@ def wait_for_free_port(host, port, timeout=float('Inf')):
 			time.sleep(0.1)
 
 	raise Timeout("Port {port} not free on {host}.".format(**vars()))
+wait_for_free_port = free
 
 
-def wait_for_occupied_port(host, port, timeout=float('Inf')):
+def occupied(host, port, timeout=float('Inf')):
 	"""
 	Wait for the specified port to become occupied (accepting requests).
 	Return when the port is occupied or raise a Timeout if timeout has
@@ -126,3 +127,4 @@ def wait_for_occupied_port(host, port, timeout=float('Inf')):
 			return
 
 	raise Timeout("Port {port} not bound on {host}.".format(**vars))
+wait_for_occupied_port = occupied
