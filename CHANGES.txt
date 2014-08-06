@@ -8,6 +8,9 @@ Renamed functions:
 
 The original names are kept as aliases for now.
 
+Added execution support for the portend module. Invoke with
+``python -m portend``.
+
 1.0
 ===
 

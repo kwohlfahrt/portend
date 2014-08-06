@@ -2,6 +2,8 @@
 import time
 import socket
 import datetime
+import argparse
+import sys
 
 from jaraco import timing
 
@@ -128,3 +130,33 @@ def occupied(host, port, timeout=float('Inf')):
 
 	raise Timeout("Port {port} not bound on {host}.".format(**vars))
 wait_for_occupied_port = occupied
+
+
+class HostPort(str):
+	@property
+	def host(self):
+		host, sep, port = self.partition(':')
+		return host
+
+	@property
+	def port(self):
+		host, sep, port = self.partition(':')
+		return int(port)
+
+
+def _main():
+	parser = argparse.ArgumentParser()
+	global_lookup = lambda key: globals()[key]
+	parser.add_argument('target', metavar='host:port', type=HostPort)
+	parser.add_argument('func', metavar='state', type=global_lookup)
+	parser.add_argument('-t', '--timeout', default=None, type=float)
+	args = parser.parse_args()
+	try:
+		args.func(args.target.host, args.target.port, timeout=args.timeout)
+	except Timeout as timeout:
+		print(timeout, file=sys.stderr)
+		raise SystemExit(1)
+
+
+if __name__ == '__main__':
+	_main()
