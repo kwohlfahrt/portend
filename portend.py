@@ -60,7 +60,7 @@ def _check_port(host, port, timeout=1.0):
 				s.close()
 		else:
 			tmpl = "Port {port} is in use on {host}."
-			raise IOError(tmpl.format(**vars()))
+			raise IOError(tmpl.format(**locals()))
 
 
 class Timeout(IOError):
