@@ -135,6 +135,18 @@ def occupied(host, port, timeout=float('Inf')):
 wait_for_occupied_port = occupied
 
 
+def find_available_local_port():
+	"""
+	Find a free port on localhost.
+	"""
+	sock = socket.socket(socket.AF_INET6, socket.SOCK_STREAM)
+	addr = '', 0
+	sock.bind(addr)
+	addr, port = sock.getsockname()[:2]
+	sock.close()
+	return port
+
+
 class HostPort(str):
 	@property
 	def host(self):

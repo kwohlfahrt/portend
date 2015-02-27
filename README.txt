@@ -30,3 +30,9 @@ message and exits with a status of 1. For example::
     python -m portend -t 1 localhost:31923 occupied
     (one second passes)
     Port 31923 not bound on localhost.
+
+Portend also exposes a ``find_available_local_port`` for identifying
+a suitable port for binding locally::
+
+    port = portend.find_available_local_port()
+    print(port, "is available for binding")
