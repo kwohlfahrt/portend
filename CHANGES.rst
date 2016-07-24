@@ -1,3 +1,8 @@
+1.5
+===
+
+Automatically deploy tagged versions via Travis-CI.
+
 1.4
 ===
 
