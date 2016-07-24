@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
 
+"""
+A simple library for managing the availability of ports.
+"""
+
 from __future__ import print_function
 
 import time
@@ -9,6 +13,7 @@ import argparse
 import sys
 
 from jaraco import timing
+
 
 def client_host(server_host):
 	"""Return the host on which a client can connect to the given listener."""
@@ -138,6 +143,9 @@ wait_for_occupied_port = occupied
 def find_available_local_port():
 	"""
 	Find a free port on localhost.
+
+	>>> 0 < find_available_local_port() < 65536
+	True
 	"""
 	sock = socket.socket(socket.AF_INET6, socket.SOCK_STREAM)
 	addr = '', 0
@@ -148,6 +156,21 @@ def find_available_local_port():
 
 
 class HostPort(str):
+	"""
+	A simple representation of a host/port pair as a string
+
+	>>> hp = HostPort('localhost:32768')
+
+	>>> hp.host
+	'localhost'
+
+	>>> hp.port
+	32768
+
+	>>> len(hp)
+	15
+	"""
+
 	@property
 	def host(self):
 		host, sep, port = self.partition(':')
