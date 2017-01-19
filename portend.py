@@ -80,6 +80,8 @@ def free(host, port, timeout=float('Inf')):
 
 	Timeout may be specified in seconds or as a timedelta.
 	If timeout is None or ∞, the routine will run indefinitely.
+
+	>>> free('localhost', find_available_local_port())
 	"""
 	if not host:
 		raise ValueError("Host values of '' or None are not allowed.")
@@ -114,6 +116,11 @@ def occupied(host, port, timeout=float('Inf')):
 
 	Timeout may be specified in seconds or as a timedelta.
 	If timeout is None or ∞, the routine will run indefinitely.
+
+	>>> occupied('localhost', find_available_local_port(), .1)
+	Traceback (most recent call last):
+	...
+	portend.Timeout: Port ... not bound on localhost.
 	"""
 	if not host:
 		raise ValueError("Host values of '' or None are not allowed.")
