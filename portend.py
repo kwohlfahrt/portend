@@ -13,6 +13,7 @@ import argparse
 import sys
 
 from jaraco import timing
+from py26compat import total_seconds
 
 
 def client_host(server_host):
@@ -95,7 +96,7 @@ def free(host, port, timeout=float('Inf')):
 
 	watch = timing.Stopwatch()
 
-	while watch.split().total_seconds() < timeout:
+	while total_seconds(watch.split()) < timeout:
 		try:
 			# Expect a free port, so use a small timeout
 			_check_port(host, port, timeout=0.1)
@@ -117,10 +118,10 @@ def occupied(host, port, timeout=float('Inf')):
 	Timeout may be specified in seconds or as a timedelta.
 	If timeout is None or ∞, the routine will run indefinitely.
 
-	>>> occupied('localhost', find_available_local_port(), .1)
+	>>> occupied('localhost', find_available_local_port(), .1) # doctest: +IGNORE_EXCEPTION_DETAIL
 	Traceback (most recent call last):
-	...
-	portend.Timeout: Port ... not bound on localhost.
+	    ...
+	Timeout: Port ... not bound on localhost.
 	"""
 	if not host:
 		raise ValueError("Host values of '' or None are not allowed.")
@@ -134,7 +135,7 @@ def occupied(host, port, timeout=float('Inf')):
 
 	watch = timing.Stopwatch()
 
-	while watch.split().total_seconds() < timeout:
+	while total_seconds(watch.split()) < timeout:
 		try:
 			_check_port(host, port, timeout=.5)
 			# Politely wait

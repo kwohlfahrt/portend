@@ -26,8 +26,12 @@ params = dict(
 	namespace_packages=name.split('.')[:-1],
 	install_requires=[
 		'jaraco.timing',
+		'jaraco.compat',
 	],
 	extras_require={
+		':python_version == "2.6"': [
+			'argparse',
+		],
 	},
 	setup_requires=[
 		'setuptools_scm>=1.15.0',
