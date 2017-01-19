@@ -1,3 +1,10 @@
+1.6.1
+=====
+
+Correct failures on Python 2.6 where
+``datetime.datetime.total_seconds``
+and argparse are unavailable.
+
 1.6
 ===
 
