@@ -1,3 +1,8 @@
+1.6
+===
+
+Add support for Python 2.6 (to support CherryPy).
+
 1.5
 ===
 
