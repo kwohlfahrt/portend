@@ -1,5 +1,12 @@
-portend
-=======
+.. image:: https://img.shields.io/pypi/v/portend.svg
+   :target: https://pypi.org/project/portend
+
+.. image:: https://img.shields.io/pypi/pyversions/portend.svg
+
+.. image:: https://img.shields.io/pypi/dm/portend.svg
+
+.. image:: https://img.shields.io/travis/jaraco/portend/master.svg
+   :target: http://travis-ci.org/jaraco/portend
 
 por·tend
 pôrˈtend/
@@ -7,8 +14,15 @@ verb
 
     be a sign or warning that (something, especially something momentous or calamitous) is likely to happen.
 
+License
+=======
+
+License is indicated in the project metadata (typically one or more
+of the Trove classifiers). For more details, see `this explanation
+<https://github.com/jaraco/skeleton/issues/1>`_.
+
 Usage
------
+=====
 
 Use portend to monitor TCP ports for bound or unbound states.
 
