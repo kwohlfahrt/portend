@@ -29,6 +29,25 @@ def client_host(server_host):
 	return server_host
 
 
+def _getaddrinfo(host, port, *args, **kwargs):
+	"""
+	Provide a fallback when getaddrinfo fails.
+
+	TODO: why is this needed?
+	"""
+	try:
+		return socket.getaddrinfo(host, port, *args, **kwargs)
+	except socket.gaierror:
+		if ':' in host:
+			family = socket.AF_INET6
+			addr = host, port, 0, 0
+		else:
+			family = socket.AF_INET
+			addr = host, port
+		item = family, socket.SOCK_STREAM, 0, "", addr
+		return [item]
+
+
 def _check_port(host, port, timeout=1.0):
 	"""
 	Raise an error if the given port is not free on the given host.
@@ -40,20 +59,7 @@ def _check_port(host, port, timeout=1.0):
 	"""
 	host = client_host(host)
 
-	# AF_INET or AF_INET6 socket
-	# Get the correct address family for host (allows IPv6 addresses)
-	try:
-		info = socket.getaddrinfo(host, port, socket.AF_UNSPEC,
-			socket.SOCK_STREAM)
-	except socket.gaierror:
-		if ':' in host:
-			family = socket.AF_INET6
-			addr = host, port, 0, 0
-		else:
-			family = socket.AF_INET
-			addr = host, port
-		item = family, socket.SOCK_STREAM, 0, "", addr
-		info = [item]
+	info = _getaddrinfo(host, port, socket.AF_UNSPEC, socket.SOCK_STREAM)
 
 	for res in info:
 		af, socktype, proto, canonname, sa = res
