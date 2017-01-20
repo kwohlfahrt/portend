@@ -1,4 +1,5 @@
 import socket
+import contextlib
 
 import pytest
 
@@ -34,10 +35,8 @@ def listening_addr(request):
 	sock = socket.socket(af, socktype, proto)
 	sock.bind(sa)
 	sock.listen(5)
-	try:
+	with contextlib.closing(sock):
 		yield sa
-	finally:
-		sock.close()
 
 
 @pytest.fixture(**build_addr_infos())
