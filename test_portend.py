@@ -9,7 +9,7 @@ def socket_infos():
 	"""
 	Generate addr infos for connections to localhost
 	"""
-	host = None
+	host = None  # all available interfaces
 	port = portend.find_available_local_port()
 	family = socket.AF_UNSPEC
 	socktype = socket.SOCK_STREAM
