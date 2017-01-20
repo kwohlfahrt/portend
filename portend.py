@@ -38,8 +38,6 @@ def _check_port(host, port, timeout=1.0):
 	>>> _check_port('127.0.0.1', free_port)
 	>>> _check_port('::1', free_port)
 	"""
-	if not host:
-		raise ValueError("Host values of '' or None are not allowed.")
 	host = client_host(host)
 
 	# AF_INET or AF_INET6 socket
