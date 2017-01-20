@@ -67,17 +67,15 @@ def _check_port(host, port, timeout=1.0):
 
 
 def _check_free_info(af, socktype, proto, canonname, sa, timeout):
-	s = None
+	s = socket.socket(af, socktype, proto)
 	try:
-		s = socket.socket(af, socktype, proto)
 		# important that a small timeout is set here to allow the check
 		#  to fail fast.
 		s.settimeout(timeout)
 		s.connect(sa)
 		s.close()
 	except socket.error:
-		if s:
-			s.close()
+		s.close()
 	else:
 		port, host = sa[:2]
 		tmpl = "Port {port} is in use on {host}."
