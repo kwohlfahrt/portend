@@ -11,7 +11,6 @@ import socket
 import datetime
 import argparse
 import sys
-import functools
 import itertools
 import contextlib
 
@@ -52,39 +51,47 @@ def _getaddrinfo(host, port, *args, **kwargs):
 		return [item]
 
 
-def _check_port(host, port, timeout=1.0):
-	"""
-	Raise an error if the given port is not free on the given host
-	(i.e. all attempts to connect fail within the timeout).
+class Checker(object):
+	def __init__(self, timeout=1.0):
+		self.timeout = timeout
 
-	>>> free_port = find_available_local_port()
-	>>> _check_port('localhost', free_port)
-	>>> _check_port('127.0.0.1', free_port)
-	>>> _check_port('::1', free_port)
-	"""
-	info = _getaddrinfo(host, port, socket.AF_UNSPEC, socket.SOCK_STREAM)
-	_timeout_connect = functools.partial(_check_free_info, timeout=timeout)
-	list(itertools.starmap(_timeout_connect, info))
+	def assert_free(self, host, port):
+		"""
+		Assert that the given port is free on the given host
+		in that all attempts to connect fail within the timeout
+		or raise a PortNotFree exception.
 
+		>>> free_port = find_available_local_port()
 
-def _check_free_info(af, socktype, proto, canonname, sa, timeout):
-	s = socket.socket(af, socktype, proto)
-	# fail fast with a small timeout
-	s.settimeout(timeout)
+		>>> Checker().assert_free('localhost', free_port)
+		>>> Checker().assert_free('127.0.0.1', free_port)
+		>>> Checker().assert_free('::1', free_port)
+		"""
+		info = _getaddrinfo(host, port, socket.AF_UNSPEC, socket.SOCK_STREAM)
+		list(itertools.starmap(self._connect, info))
 
-	with contextlib.closing(s):
-		try:
-			s.connect(sa)
-		except socket.error:
-			return
+	def _connect(self, af, socktype, proto, canonname, sa):
+		s = socket.socket(af, socktype, proto)
+		# fail fast with a small timeout
+		s.settimeout(self.timeout)
 
-	# the connect succeeded, so the port isn't free
-	port, host = sa[:2]
-	tmpl = "Port {port} is in use on {host}."
-	raise IOError(tmpl.format(**locals()))
+		with contextlib.closing(s):
+			try:
+				s.connect(sa)
+			except socket.error:
+				return
+
+		# the connect succeeded, so the port isn't free
+		port, host = sa[:2]
+		tmpl = "Port {port} is in use on {host}."
+		raise PortNotFree(tmpl.format(**locals()))
 
 
 class Timeout(IOError):
+	pass
+
+
+class PortNotFree(IOError):
 	pass
 
 
@@ -114,7 +121,7 @@ def free(host, port, timeout=float('Inf')):
 	while total_seconds(watch.split()) < timeout:
 		try:
 			# Expect a free port, so use a small timeout
-			_check_port(host, port, timeout=0.1)
+			Checker(timeout=0.1).assert_free(host, port)
 			return
 		except IOError:
 			# Politely wait.
@@ -152,7 +159,7 @@ def occupied(host, port, timeout=float('Inf')):
 
 	while total_seconds(watch.split()) < timeout:
 		try:
-			_check_port(host, port, timeout=.5)
+			Checker(timeout=.5).assert_free(host, port)
 			# Politely wait
 			time.sleep(0.1)
 		except IOError:
