@@ -45,11 +45,13 @@ def _check_port(host, port, timeout=1.0):
 			socket.SOCK_STREAM)
 	except socket.gaierror:
 		if ':' in host:
-			info = [(
-				socket.AF_INET6, socket.SOCK_STREAM, 0, "", (host, port, 0, 0)
-			)]
+			family = socket.AF_INET6
+			addr = host, port, 0, 0
 		else:
-			info = [(socket.AF_INET, socket.SOCK_STREAM, 0, "", (host, port))]
+			family = socket.AF_INET
+			addr = host, port
+		item = family, socket.SOCK_STREAM, 0, "", addr
+		info = [item]
 
 	for res in info:
 		af, socktype, proto, canonname, sa = res
