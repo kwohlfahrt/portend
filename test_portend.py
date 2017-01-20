@@ -13,7 +13,9 @@ def socket_infos():
 	port = portend.find_available_local_port()
 	family = socket.AF_UNSPEC
 	socktype = socket.SOCK_STREAM
-	return socket.getaddrinfo(host, port, family, socktype)
+	proto = 0
+	flags = socket.AI_PASSIVE
+	return socket.getaddrinfo(host, port, family, socktype, proto, flags)
 
 
 def id_for_info(info):
