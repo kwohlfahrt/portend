@@ -32,6 +32,11 @@ def client_host(server_host):
 def _check_port(host, port, timeout=1.0):
 	"""
 	Raise an error if the given port is not free on the given host.
+
+	>>> free_port = find_available_local_port()
+	>>> _check_port('localhost', free_port)
+	>>> _check_port('127.0.0.1', free_port)
+	>>> _check_port('::1', free_port)
 	"""
 	if not host:
 		raise ValueError("Host values of '' or None are not allowed.")
