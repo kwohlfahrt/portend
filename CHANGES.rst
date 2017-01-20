@@ -1,3 +1,8 @@
+1.7
+===
+
+Expose the port check functionality as ``portend.Checker`` class.
+
 1.6.1
 =====
 
