@@ -11,7 +11,8 @@ def socket_infos():
 	"""
 	host = ''
 	port = portend.find_available_local_port()
-	return socket.getaddrinfo(host, port, socket.AF_UNSPEC, socket.SOCK_STREAM)
+	family = getattr(socket, 'AF_UNSPEC', socket.AF_INET)
+	return socket.getaddrinfo(host, port, family, socket.SOCK_STREAM)
 
 
 def id_for_info(info):
