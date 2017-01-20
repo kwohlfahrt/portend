@@ -41,7 +41,6 @@ def _check_port(host, port, timeout=1.0):
 	if not host:
 		raise ValueError("Host values of '' or None are not allowed.")
 	host = client_host(host)
-	port = int(port)
 
 	# AF_INET or AF_INET6 socket
 	# Get the correct address family for host (allows IPv6 addresses)
