@@ -11,6 +11,8 @@ import socket
 import datetime
 import argparse
 import sys
+import functools
+import itertools
 
 from jaraco import timing
 from py26compat import total_seconds
@@ -60,9 +62,12 @@ def _check_port(host, port, timeout=1.0):
 	>>> _check_port('::1', free_port)
 	"""
 	info = _getaddrinfo(host, port, socket.AF_UNSPEC, socket.SOCK_STREAM)
+	_timeout_connect = functools.partial(_check_free_info, timeout=timeout)
+	list(itertools.starmap(_timeout_connect, info))
 
-	for res in info:
-		af, socktype, proto, canonname, sa = res
+
+def _check_free_info(af, socktype, proto, canonname, sa, timeout):
+	if True:
 		s = None
 		try:
 			s = socket.socket(af, socktype, proto)
@@ -75,6 +80,7 @@ def _check_port(host, port, timeout=1.0):
 			if s:
 				s.close()
 		else:
+			port, host = sa[:2]
 			tmpl = "Port {port} is in use on {host}."
 			raise IOError(tmpl.format(**locals()))
 
