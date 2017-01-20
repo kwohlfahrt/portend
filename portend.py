@@ -137,7 +137,7 @@ def free(host, port, timeout=float('Inf')):
 			# Expect a free port, so use a small timeout
 			Checker(timeout=0.1).assert_free(host, port)
 			return
-		except IOError:
+		except PortNotFree:
 			# Politely wait.
 			time.sleep(0.1)
 
@@ -176,7 +176,7 @@ def occupied(host, port, timeout=float('Inf')):
 			Checker(timeout=.5).assert_free(host, port)
 			# Politely wait
 			time.sleep(0.1)
-		except IOError:
+		except PortNotFree:
 			# port is occupied
 			return
 
