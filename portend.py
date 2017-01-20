@@ -13,6 +13,7 @@ import argparse
 import sys
 import functools
 import itertools
+import contextlib
 
 from jaraco import timing
 from py26compat import total_seconds
@@ -68,14 +69,14 @@ def _check_port(host, port, timeout=1.0):
 
 def _check_free_info(af, socktype, proto, canonname, sa, timeout):
 	s = socket.socket(af, socktype, proto)
-	try:
-		# fail fast with a small timeout
-		s.settimeout(timeout)
-		s.connect(sa)
-	except socket.error:
-		return
-	finally:
-		s.close()
+
+	with contextlib.closing(s):
+		try:
+			# fail fast with a small timeout
+			s.settimeout(timeout)
+			s.connect(sa)
+		except socket.error:
+			return
 
 	# the connect succeeded, so the port isn't free
 	port, host = sa[:2]
