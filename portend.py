@@ -14,6 +14,8 @@ import sys
 import itertools
 import contextlib
 import collections
+import textwrap
+import warnings
 
 from jaraco import timing
 from py26compat import total_seconds
@@ -35,12 +37,16 @@ def client_host(server_host):
 def _getaddrinfo(host, port, *args, **kwargs):
 	"""
 	Provide a fallback when getaddrinfo fails.
-
-	TODO: why is this needed?
 	"""
 	try:
 		return socket.getaddrinfo(host, port, *args, **kwargs)
 	except socket.gaierror:
+		msg = textwrap.dedent("""
+			This functionality is being considered for removal. If you
+			encounter this message, please describe your use-case
+			at https://github.com/jaraco/portend/issues/1.
+			""").lstrip()
+		warnings.warn(msg)
 		host = client_host(host)
 		if ':' in host:
 			family = socket.AF_INET6
