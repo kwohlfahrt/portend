@@ -11,15 +11,22 @@ def socket_infos():
 	"""
 	host = ''
 	port = portend.find_available_local_port()
-	infos = socket.getaddrinfo(host, port, socket.AF_UNSPEC, socket.SOCK_STREAM)
-	for info in infos:
-		yield host, port, info
+	return socket.getaddrinfo(host, port, socket.AF_UNSPEC, socket.SOCK_STREAM)
 
 
-@pytest.fixture(params=list(socket_infos()))
+def id_for_info(info):
+	af, = info[:1]
+	return str(af)
+
+def build_listening_infos():
+	params = list(socket_infos())
+	ids = list(map(id_for_info, params))
+	return locals()
+
+
+@pytest.fixture(**build_listening_infos())
 def listening_addr(request):
-	host, port, info = request.param
-	af, socktype, proto, canonname, sa = info
+	af, socktype, proto, canonname, sa = request.param
 	sock = socket.socket(af, socktype, proto)
 	sock.bind(sa)
 	sock.listen(5)
