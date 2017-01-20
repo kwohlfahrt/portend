@@ -9,7 +9,7 @@ def socket_infos():
 	"""
 	Generate addr infos for connections to localhost
 	"""
-	host = ''
+	host = None
 	port = portend.find_available_local_port()
 	family = getattr(socket, 'AF_UNSPEC', socket.AF_INET)
 	return socket.getaddrinfo(host, port, family, socket.SOCK_STREAM)
