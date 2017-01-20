@@ -18,13 +18,13 @@ def id_for_info(info):
 	af, = info[:1]
 	return str(af)
 
-def build_listening_infos():
+def build_addr_infos():
 	params = list(socket_infos())
 	ids = list(map(id_for_info, params))
 	return locals()
 
 
-@pytest.fixture(**build_listening_infos())
+@pytest.fixture(**build_addr_infos())
 def listening_addr(request):
 	af, socktype, proto, canonname, sa = request.param
 	sock = socket.socket(af, socktype, proto)
@@ -36,7 +36,16 @@ def listening_addr(request):
 		sock.close()
 
 
+@pytest.fixture(**build_addr_infos())
+def nonlistening_addr(request):
+	af, socktype, proto, canonname, sa = request.param
+	return sa
+
+
 class TestCheckPort:
 	def test_check_port_listening(self, listening_addr):
 		with pytest.raises(IOError):
 			portend._check_port(*listening_addr[:2])
+
+	def test_check_port_nonlistening(self, nonlistening_addr):
+		portend._check_port(*nonlistening_addr[:2])
