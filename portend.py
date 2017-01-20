@@ -69,8 +69,7 @@ def _check_port(host, port, timeout=1.0):
 def _check_free_info(af, socktype, proto, canonname, sa, timeout):
 	s = socket.socket(af, socktype, proto)
 	try:
-		# important that a small timeout is set here to allow the check
-		#  to fail fast.
+		# fail fast with a small timeout
 		s.settimeout(timeout)
 		s.connect(sa)
 		s.close()
