@@ -72,13 +72,15 @@ def _check_free_info(af, socktype, proto, canonname, sa, timeout):
 		# fail fast with a small timeout
 		s.settimeout(timeout)
 		s.connect(sa)
-		s.close()
 	except socket.error:
+		return
+	finally:
 		s.close()
-	else:
-		port, host = sa[:2]
-		tmpl = "Port {port} is in use on {host}."
-		raise IOError(tmpl.format(**locals()))
+
+	# the connect succeeded, so the port isn't free
+	port, host = sa[:2]
+	tmpl = "Port {port} is in use on {host}."
+	raise IOError(tmpl.format(**locals()))
 
 
 class Timeout(IOError):
