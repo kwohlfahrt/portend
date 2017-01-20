@@ -38,6 +38,7 @@ def _getaddrinfo(host, port, *args, **kwargs):
 	try:
 		return socket.getaddrinfo(host, port, *args, **kwargs)
 	except socket.gaierror:
+		host = client_host(host)
 		if ':' in host:
 			family = socket.AF_INET6
 			addr = host, port, 0, 0
@@ -50,15 +51,14 @@ def _getaddrinfo(host, port, *args, **kwargs):
 
 def _check_port(host, port, timeout=1.0):
 	"""
-	Raise an error if the given port is not free on the given host.
+	Raise an error if the given port is not free on the given host
+	(i.e. all attempts to connect fail within the timeout).
 
 	>>> free_port = find_available_local_port()
 	>>> _check_port('localhost', free_port)
 	>>> _check_port('127.0.0.1', free_port)
 	>>> _check_port('::1', free_port)
 	"""
-	host = client_host(host)
-
 	info = _getaddrinfo(host, port, socket.AF_UNSPEC, socket.SOCK_STREAM)
 
 	for res in info:
@@ -69,7 +69,7 @@ def _check_port(host, port, timeout=1.0):
 			# important that a small timeout is set here to allow the check
 			#  to fail fast.
 			s.settimeout(timeout)
-			s.connect((host, port))
+			s.connect(sa)
 			s.close()
 		except socket.error:
 			if s:
