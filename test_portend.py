@@ -49,7 +49,7 @@ def nonlistening_addr(request):
 class TestChecker:
 	def test_check_port_listening(self, listening_addr):
 		with pytest.raises(portend.PortNotFree):
-			portend.Checker().assert_free(*listening_addr[:2])
+			portend.Checker().assert_free(listening_addr)
 
 	def test_check_port_nonlistening(self, nonlistening_addr):
-		portend.Checker().assert_free(*nonlistening_addr[:2])
+		portend.Checker().assert_free(nonlistening_addr)

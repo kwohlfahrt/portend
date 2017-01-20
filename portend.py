@@ -13,6 +13,7 @@ import argparse
 import sys
 import itertools
 import contextlib
+import collections
 
 from jaraco import timing
 from py26compat import total_seconds
@@ -55,9 +56,9 @@ class Checker(object):
 	def __init__(self, timeout=1.0):
 		self.timeout = timeout
 
-	def assert_free(self, host, port):
+	def assert_free(self, host, port=None):
 		"""
-		Assert that the given port is free on the given host
+		Assert that the given addr is free
 		in that all attempts to connect fail within the timeout
 		or raise a PortNotFree exception.
 
@@ -66,7 +67,14 @@ class Checker(object):
 		>>> Checker().assert_free('localhost', free_port)
 		>>> Checker().assert_free('127.0.0.1', free_port)
 		>>> Checker().assert_free('::1', free_port)
+
+		Also accepts an addr tuple
+
+		>>> addr = '::1', free_port, 0, 0
+		>>> Checker().assert_free(addr)
 		"""
+		if port is None and isinstance(host, collections.Sequence):
+			host, port = host[:2]
 		info = _getaddrinfo(host, port, socket.AF_UNSPEC, socket.SOCK_STREAM)
 		list(itertools.starmap(self._connect, info))
 
