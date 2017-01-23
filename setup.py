@@ -25,7 +25,7 @@ params = dict(
 	py_modules=['portend'],
 	namespace_packages=name.split('.')[:-1],
 	install_requires=[
-		'jaraco.timing',
+		'tempora',
 		'jaraco.compat',
 	],
 	extras_require={

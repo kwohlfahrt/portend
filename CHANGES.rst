@@ -1,3 +1,8 @@
+1.7.1
+=====
+
+* 2: Use tempora, replacing deprecated jaraco.timing.
+
 1.7
 ===
 

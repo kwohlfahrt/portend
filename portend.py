@@ -17,7 +17,7 @@ import collections
 import textwrap
 import warnings
 
-from jaraco import timing
+from tempora import timing
 from py26compat import total_seconds
 
 
