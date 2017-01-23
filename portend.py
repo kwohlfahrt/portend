@@ -4,7 +4,7 @@
 A simple library for managing the availability of ports.
 """
 
-from __future__ import print_function
+from __future__ import print_function, division
 
 import time
 import socket
@@ -18,7 +18,6 @@ import textwrap
 import warnings
 
 from tempora import timing
-from py26compat import total_seconds
 
 
 def client_host(server_host):
@@ -238,6 +237,19 @@ def _main():
 	except Timeout as timeout:
 		print(timeout, file=sys.stderr)
 		raise SystemExit(1)
+
+
+# from jaraco.compat
+def total_seconds(td):
+	"""
+	Python 2.7 adds a total_seconds method to timedelta objects.
+	See http://docs.python.org/library/datetime.html#datetime.timedelta.total_seconds
+	"""
+	try:
+		result = td.total_seconds()
+	except AttributeError:
+		result = (td.microseconds + (td.seconds + td.days * 24 * 3600) * 10**6) / 10**6
+	return result
 
 
 if __name__ == '__main__':

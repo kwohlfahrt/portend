@@ -26,7 +26,6 @@ params = dict(
 	namespace_packages=name.split('.')[:-1],
 	install_requires=[
 		'tempora',
-		'jaraco.compat',
 	],
 	extras_require={
 		':python_version == "2.6"': [

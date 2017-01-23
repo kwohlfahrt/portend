@@ -1,3 +1,10 @@
+1.8
+===
+
+Remove dependency on ``jaraco.compat`` and instead just
+copy and reference the ``total_seconds`` compatibility
+function for Python 2.6.
+
 1.7.1
 =====
 
