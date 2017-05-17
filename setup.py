@@ -22,14 +22,24 @@ params = dict(
 	url="https://github.com/jaraco/" + name,
 	packages=setuptools.find_packages(),
 	include_package_data=True,
+	python_requires='>=2.7',
 	py_modules=['portend'],
-	namespace_packages=name.split('.')[:-1],
 	install_requires=[
 		'tempora',
 	],
 	extras_require={
 		':python_version == "2.6"': [
 			'argparse',
+		],
+		'testing': [
+			'pytest>=2.8',
+			'pytest-sugar',
+			'pytest-warnings',
+		],
+		'docs': [
+			'sphinx',
+			'jaraco.packaging>=3.2',
+			'rst.linker>=1.9',
 		],
 	},
 	setup_requires=[
