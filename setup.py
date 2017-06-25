@@ -25,7 +25,7 @@ params = dict(
 	python_requires='>=2.7',
 	py_modules=['portend'],
 	install_requires=[
-		'tempora',
+		'tempora>=1.8',
 	],
 	extras_require={
 		'testing': [

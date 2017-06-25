@@ -103,16 +103,9 @@ def free(host, port, timeout=float('Inf')):
 	if not host:
 		raise ValueError("Host values of '' or None are not allowed.")
 
-	if isinstance(timeout, datetime.timedelta):
-		timeout = timeout.total_seconds()
+	timer = timing.Timer(timeout)
 
-	if timeout is None:
-		# treat None as infinite timeout
-		timeout = float('Inf')
-
-	watch = timing.Stopwatch()
-
-	while watch.split().total_seconds() < timeout:
+	while not timer.expired():
 		try:
 			# Expect a free port, so use a small timeout
 			Checker(timeout=0.1).assert_free(host, port)
@@ -142,16 +135,9 @@ def occupied(host, port, timeout=float('Inf')):
 	if not host:
 		raise ValueError("Host values of '' or None are not allowed.")
 
-	if isinstance(timeout, datetime.timedelta):
-		timeout = timeout.total_seconds()
+	timer = timing.Timer(timeout)
 
-	if timeout is None:
-		# treat None as infinite timeout
-		timeout = float('Inf')
-
-	watch = timing.Stopwatch()
-
-	while watch.split().total_seconds() < timeout:
+	while not timer.expired():
 		try:
 			Checker(timeout=.5).assert_free(host, port)
 			# Politely wait

@@ -1,3 +1,9 @@
+2.1
+===
+
+Use tempora.timing.Timer from tempora 1.8, replacing
+boilerplate code in occupied and free functions.
+
 2.0
 ===
 
