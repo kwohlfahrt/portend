@@ -1,3 +1,9 @@
+2.0
+===
+
+#1: Removed ``portend._getaddrinfo`` and its usage in
+   ``Checker.assert_free``.
+
 1.8
 ===
 

@@ -14,8 +14,6 @@ import sys
 import itertools
 import contextlib
 import collections
-import textwrap
-import warnings
 
 from tempora import timing
 
@@ -31,30 +29,6 @@ def client_host(server_host):
 		# ways to write IN6ADDR_ANY.
 		return '::1'
 	return server_host
-
-
-def _getaddrinfo(host, port, *args, **kwargs):
-	"""
-	Provide a fallback when getaddrinfo fails.
-	"""
-	try:
-		return socket.getaddrinfo(host, port, *args, **kwargs)
-	except socket.gaierror:
-		msg = textwrap.dedent("""
-			This functionality is being considered for removal. If you
-			encounter this message, please describe your use-case
-			at https://github.com/jaraco/portend/issues/1.
-			""").lstrip()
-		warnings.warn(msg)
-		host = client_host(host)
-		if ':' in host:
-			family = socket.AF_INET6
-			addr = host, port, 0, 0
-		else:
-			family = socket.AF_INET
-			addr = host, port
-		item = family, socket.SOCK_STREAM, 0, "", addr
-		return [item]
 
 
 class Checker(object):
@@ -85,7 +59,9 @@ class Checker(object):
 		"""
 		if port is None and isinstance(host, collections.Sequence):
 			host, port = host[:2]
-		info = _getaddrinfo(host, port, socket.AF_UNSPEC, socket.SOCK_STREAM)
+		info = socket.getaddrinfo(
+			host, port, socket.AF_UNSPEC, socket.SOCK_STREAM,
+		)
 		list(itertools.starmap(self._connect, info))
 
 	def _connect(self, af, socktype, proto, canonname, sa):
