@@ -77,6 +77,11 @@ class Checker(object):
 
 		>>> addr = '::1', free_port, 0, 0
 		>>> Checker().assert_free(addr)
+
+		Host might refer to a server bind address like '::', which
+		should use localhost to perform the check.
+
+		>>> Checker().assert_free('::', free_port)
 		"""
 		if port is None and isinstance(host, collections.Sequence):
 			host, port = host[:2]
