@@ -112,7 +112,7 @@ def free(host, port, timeout=float('Inf')):
 
 	watch = timing.Stopwatch()
 
-	while total_seconds(watch.split()) < timeout:
+	while watch.split().total_seconds() < timeout:
 		try:
 			# Expect a free port, so use a small timeout
 			Checker(timeout=0.1).assert_free(host, port)
@@ -151,7 +151,7 @@ def occupied(host, port, timeout=float('Inf')):
 
 	watch = timing.Stopwatch()
 
-	while total_seconds(watch.split()) < timeout:
+	while watch.split().total_seconds() < timeout:
 		try:
 			Checker(timeout=.5).assert_free(host, port)
 			# Politely wait
@@ -218,19 +218,6 @@ def _main():
 	except Timeout as timeout:
 		print(timeout, file=sys.stderr)
 		raise SystemExit(1)
-
-
-# from jaraco.compat
-def total_seconds(td):
-	"""
-	Python 2.7 adds a total_seconds method to timedelta objects.
-	See http://docs.python.org/library/datetime.html#datetime.timedelta.total_seconds
-	"""
-	try:
-		result = td.total_seconds()
-	except AttributeError:
-		result = (td.microseconds + (td.seconds + td.days * 24 * 3600) * 10**6) / 10**6
-	return result
 
 
 if __name__ == '__main__':

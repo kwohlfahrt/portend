@@ -4,6 +4,8 @@
 #1: Removed ``portend._getaddrinfo`` and its usage in
    ``Checker.assert_free``.
 
+Dropped support for Python 2.6.
+
 1.8
 ===
 

@@ -28,9 +28,6 @@ params = dict(
 		'tempora',
 	],
 	extras_require={
-		':python_version == "2.6"': [
-			'argparse',
-		],
 		'testing': [
 			'pytest>=2.8',
 			'pytest-sugar',
@@ -49,7 +46,6 @@ params = dict(
 		"Development Status :: 5 - Production/Stable",
 		"Intended Audience :: Developers",
 		"License :: OSI Approved :: MIT License",
-		"Programming Language :: Python :: 2.6",
 		"Programming Language :: Python :: 2.7",
 		"Programming Language :: Python :: 3",
 	],
