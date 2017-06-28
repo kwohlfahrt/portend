@@ -8,7 +8,6 @@ from __future__ import print_function, division
 
 import time
 import socket
-import datetime
 import argparse
 import sys
 import itertools
