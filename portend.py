@@ -14,6 +14,7 @@ import sys
 import itertools
 import contextlib
 import collections
+import platform
 
 from tempora import timing
 
@@ -59,6 +60,8 @@ class Checker(object):
 		"""
 		if port is None and isinstance(host, collections.Sequence):
 			host, port = host[:2]
+		if platform.system() == 'Windows':
+			host = client_host(host)
 		info = socket.getaddrinfo(
 			host, port, socket.AF_UNSPEC, socket.SOCK_STREAM,
 		)

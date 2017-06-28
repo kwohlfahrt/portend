@@ -1,3 +1,10 @@
+2.1.1
+=====
+
+#5: Restored use of ``portend.client_host`` during
+    ``assert_free`` check on Windows, fixing check
+    when the bind address is *ADDR_ANY.
+
 2.1
 ===
 
@@ -8,7 +15,7 @@ boilerplate code in occupied and free functions.
 ===
 
 #1: Removed ``portend._getaddrinfo`` and its usage in
-   ``Checker.assert_free``.
+    ``Checker.assert_free``.
 
 Dropped support for Python 2.6.
 
