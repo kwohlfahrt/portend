@@ -52,11 +52,11 @@ a suitable port for binding locally::
     print(port, "is available for binding")
 
 Portend additionally exposes the lower-level port checking functionality
-in the :class:`Checker` class, which currently exposes only one public
+in the ``Checker`` class, which currently exposes only one public
 method, ``assert_free``.
 
     portend.Checker().assert_free('localhost', 31923)
 
 If assert_free is passed a host/port combination that is occupied by
 a bound listener (i.e. a TCP connection is established to that host/port),
-assert_free will raise a :class:`PortNotFree` exception.
+assert_free will raise a ``PortNotFree`` exception.

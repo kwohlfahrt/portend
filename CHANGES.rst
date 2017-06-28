@@ -1,3 +1,8 @@
+2.1.2
+=====
+
+Fix README rendering.
+
 2.1.1
 =====
 
