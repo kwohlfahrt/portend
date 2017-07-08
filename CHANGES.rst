@@ -16,9 +16,6 @@ Fix README rendering.
 Use tempora.timing.Timer from tempora 1.8, replacing
 boilerplate code in occupied and free functions.
 
-2.0
-===
-
 #1: Removed ``portend._getaddrinfo`` and its usage in
     ``Checker.assert_free``.
 
