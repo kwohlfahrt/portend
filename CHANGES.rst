@@ -1,3 +1,8 @@
+2.2
+===
+
+Merge with skeleton, including embedded license file.
+
 2.1.2
 =====
 
