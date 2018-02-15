@@ -23,6 +23,7 @@ def id_for_info(info):
 	af, = info[:1]
 	return str(af)
 
+
 def build_addr_infos():
 	params = list(socket_infos())
 	ids = list(map(id_for_info, params))

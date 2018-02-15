@@ -117,6 +117,8 @@ def free(host, port, timeout=float('Inf')):
 			time.sleep(0.1)
 
 	raise Timeout("Port {port} not free on {host}.".format(**locals()))
+
+
 wait_for_free_port = free
 
 
@@ -149,6 +151,8 @@ def occupied(host, port, timeout=float('Inf')):
 			return
 
 	raise Timeout("Port {port} not bound on {host}.".format(**locals()))
+
+
 wait_for_occupied_port = occupied
 
 
@@ -196,7 +200,9 @@ class HostPort(str):
 
 def _main():
 	parser = argparse.ArgumentParser()
-	global_lookup = lambda key: globals()[key]
+
+	def global_lookup(key):
+		return globals()[key]
 	parser.add_argument('target', metavar='host:port', type=HostPort)
 	parser.add_argument('func', metavar='state', type=global_lookup)
 	parser.add_argument('-t', '--timeout', default=None, type=float)
