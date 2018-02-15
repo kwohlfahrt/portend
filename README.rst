@@ -3,10 +3,11 @@
 
 .. image:: https://img.shields.io/pypi/pyversions/portend.svg
 
-.. image:: https://img.shields.io/pypi/dm/portend.svg
-
 .. image:: https://img.shields.io/travis/jaraco/portend/master.svg
-   :target: http://travis-ci.org/jaraco/portend
+   :target: https://travis-ci.org/jaraco/portend
+
+.. image:: https://readthedocs.org/projects/portend/badge/?version=latest
+   :target: https://portend.readthedocs.io/en/latest/?badge=latest
 
 por·tend
 pôrˈtend/
