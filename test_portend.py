@@ -1,5 +1,6 @@
 import socket
 import contextlib
+import os
 
 import pytest
 
@@ -33,6 +34,8 @@ def build_addr_infos():
 @pytest.fixture(**build_addr_infos())
 def listening_addr(request):
 	af, socktype, proto, canonname, sa = request.param
+	if os.environ.get('TRAVIS') and af is socket.AF_INET6:
+		pytest.xfail(reason="No IPv6 loopbak to connect; Ref #8.")
 	sock = socket.socket(af, socktype, proto)
 	sock.bind(sa)
 	sock.listen(5)
