@@ -6,6 +6,9 @@
 .. image:: https://img.shields.io/travis/jaraco/portend/master.svg
    :target: https://travis-ci.org/jaraco/portend
 
+.. image:: https://img.shields.io/appveyor/ci/jaraco/portend/master.svg
+   :target: https://ci.appveyor.com/project/jaraco/portend/branch/master
+
 .. image:: https://readthedocs.org/projects/portend/badge/?version=latest
    :target: https://portend.readthedocs.io/en/latest/?badge=latest
 
