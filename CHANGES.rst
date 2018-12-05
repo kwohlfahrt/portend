@@ -1,3 +1,10 @@
+2.4
+===
+
+#6: ``find_available_local_port`` now relies on
+    ``socket.getaddrinfo`` to find a suitable address
+    family.
+
 2.3
 ===
 
