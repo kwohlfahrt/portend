@@ -50,7 +50,7 @@ a suitable port for binding locally::
 
 Portend additionally exposes the lower-level port checking functionality
 in the ``Checker`` class, which currently exposes only one public
-method, ``assert_free``.
+method, ``assert_free``::
 
     portend.Checker().assert_free('localhost', 31923)
 
