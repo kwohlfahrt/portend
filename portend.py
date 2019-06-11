@@ -109,16 +109,16 @@ def free(host, port, timeout=float('Inf')):
 
     timer = timing.Timer(timeout)
 
-    while not timer.expired():
+    while True:
         try:
             # Expect a free port, so use a small timeout
             Checker(timeout=0.1).assert_free(host, port)
             return
         except PortNotFree:
+            if timer.expired():
+                raise Timeout("Port {port} not free on {host}.".format(**locals()))
             # Politely wait.
             time.sleep(0.1)
-
-    raise Timeout("Port {port} not free on {host}.".format(**locals()))
 
 
 wait_for_free_port = free
@@ -143,16 +143,16 @@ def occupied(host, port, timeout=float('Inf')):
 
     timer = timing.Timer(timeout)
 
-    while not timer.expired():
+    while True:
         try:
             Checker(timeout=0.5).assert_free(host, port)
+            if timer.expired():
+                raise Timeout("Port {port} not bound on {host}.".format(**locals()))
             # Politely wait
             time.sleep(0.1)
         except PortNotFree:
             # port is occupied
             return
-
-    raise Timeout("Port {port} not bound on {host}.".format(**locals()))
 
 
 wait_for_occupied_port = occupied
