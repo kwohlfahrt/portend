@@ -1,3 +1,8 @@
+2.5
+===
+
+#10: Fix race condition in ``occupied`` and ``free``.
+
 2.4
 ===
 
