@@ -48,8 +48,8 @@ def nonlistening_addr(request):
 
 
 @pytest.fixture
-def immediate_timeout(mocker):
-    mocker.patch.object(timing.Timer, 'expired').return_value(True)
+def immediate_timeout(monkeypatch):
+    monkeypatch.setattr(timing.Timer, 'expired', lambda: True)
 
 
 class TestChecker:
