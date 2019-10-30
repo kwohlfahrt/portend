@@ -1,3 +1,8 @@
+2.6
+===
+
+Package refresh.
+
 2.5
 ===
 
