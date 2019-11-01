@@ -13,17 +13,27 @@ import sys
 import itertools
 import contextlib
 import platform
+import urllib.parse
 
 try:
     from collections import abc
-except ImportError:
+except ImportError:  # pragma: nocover
     import collections as abc
 
 from tempora import timing
 
 
 def client_host(server_host):
-    """Return the host on which a client can connect to the given listener."""
+    """
+    Return the host on which a client can connect to the given listener.
+
+    >>> client_host('192.168.0.1')
+    '192.168.0.1'
+    >>> client_host('0.0.0.0')
+    '127.0.0.1'
+    >>> client_host('::')
+    '::1'
+    """
     if server_host == '0.0.0.0':
         # 0.0.0.0 is INADDR_ANY, which should answer on localhost.
         return '127.0.0.1'
@@ -64,7 +74,7 @@ class Checker(object):
         if port is None and isinstance(host, abc.Sequence):
             host, port = host[:2]
         if platform.system() == 'Windows':
-            host = client_host(host)
+            host = client_host(host)  # pragma: nocover
         info = socket.getaddrinfo(host, port, socket.AF_UNSPEC, socket.SOCK_STREAM)
         list(itertools.starmap(self._connect, info))
 
@@ -103,6 +113,11 @@ def free(host, port, timeout=float('Inf')):
     If timeout is None or ∞, the routine will run indefinitely.
 
     >>> free('localhost', find_available_local_port())
+
+    >>> free(None, None)
+    Traceback (most recent call last):
+    ...
+    ValueError: Host values of '' or None are not allowed.
     """
     if not host:
         raise ValueError("Host values of '' or None are not allowed.")
@@ -137,6 +152,11 @@ def occupied(host, port, timeout=float('Inf')):
     Traceback (most recent call last):
     ...
     Timeout: Port ... not bound on localhost.
+
+    >>> occupied(None, None)
+    Traceback (most recent call last):
+    ...
+    ValueError: Host values of '' or None are not allowed.
     """
     if not host:
         raise ValueError("Host values of '' or None are not allowed.")
@@ -188,20 +208,26 @@ class HostPort(str):
 
     >>> len(hp)
     15
+
+    >>> hp = HostPort('[::1]:32768')
+
+    >>> hp.host
+    '::1'
+
+    >>> hp.port
+    32768
     """
 
     @property
     def host(self):
-        host, sep, port = self.partition(':')
-        return host
+        return urllib.parse.urlparse(f'//{self}').hostname
 
     @property
     def port(self):
-        host, sep, port = self.partition(':')
-        return int(port)
+        return urllib.parse.urlparse(f'//{self}').port
 
 
-def _main():
+def _main(args=None):
     parser = argparse.ArgumentParser()
 
     def global_lookup(key):
@@ -210,7 +236,7 @@ def _main():
     parser.add_argument('target', metavar='host:port', type=HostPort)
     parser.add_argument('func', metavar='state', type=global_lookup)
     parser.add_argument('-t', '--timeout', default=None, type=float)
-    args = parser.parse_args()
+    args = parser.parse_args(args)
     try:
         args.func(args.target.host, args.target.port, timeout=args.timeout)
     except Timeout as timeout:
@@ -218,5 +244,4 @@ def _main():
         raise SystemExit(1)
 
 
-if __name__ == '__main__':
-    _main()
+__name__ == '__main__' and _main()

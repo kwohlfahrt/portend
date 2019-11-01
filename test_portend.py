@@ -64,6 +64,28 @@ class TestChecker:
         host, port = nonlistening_addr[:2]
         portend.free(host, port, timeout=1.0)
 
+    def test_free_with_timeout(self, listening_addr):
+        host, port = listening_addr[:2]
+        with pytest.raises(portend.Timeout):
+            portend.free(*listening_addr[:2], timeout=0.3)
+
     def test_occupied_with_immediate_timeout(self, listening_addr, immediate_timeout):
         host, port = listening_addr[:2]
         portend.occupied(host, port, timeout=1.0)
+
+
+def test_main(listening_addr):
+    listen_host, port = listening_addr[:2]
+    plain_host = portend.client_host(listen_host)
+    fmt = '[{plain_host}]' if ':' in plain_host else '{plain_host}'
+    host = fmt.format(**locals())
+    portend._main([f'{host}:{port}', 'occupied'])
+
+
+def test_main_timeout(listening_addr):
+    listen_host, port = listening_addr[:2]
+    plain_host = portend.client_host(listen_host)
+    fmt = '[{plain_host}]' if ':' in plain_host else '{plain_host}'
+    host = fmt.format(**locals())
+    with pytest.raises(SystemExit):
+        portend._main([f'{host}:{port}', 'free', '-t', '0.1'])
