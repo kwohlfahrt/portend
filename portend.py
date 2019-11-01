@@ -13,7 +13,8 @@ import sys
 import itertools
 import contextlib
 import platform
-import urllib.parse
+
+from six.moves import urllib
 
 try:
     from collections import abc
