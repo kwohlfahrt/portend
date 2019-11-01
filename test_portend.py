@@ -75,17 +75,11 @@ class TestChecker:
 
 
 def test_main(listening_addr):
-    listen_host, port = listening_addr[:2]
-    plain_host = portend.client_host(listen_host)
-    fmt = '[{plain_host}]' if ':' in plain_host else '{plain_host}'
-    host = fmt.format(**locals())
-    portend._main([f'{host}:{port}', 'occupied'])
+    target = portend.HostPort.from_addr(listening_addr)
+    portend._main([target, 'occupied'])
 
 
 def test_main_timeout(listening_addr):
-    listen_host, port = listening_addr[:2]
-    plain_host = portend.client_host(listen_host)
-    fmt = '[{plain_host}]' if ':' in plain_host else '{plain_host}'
-    host = fmt.format(**locals())
+    target = portend.HostPort.from_addr(listening_addr)
     with pytest.raises(SystemExit):
-        portend._main([f'{host}:{port}', 'free', '-t', '0.1'])
+        portend._main([target, 'free', '-t', '0.1'])

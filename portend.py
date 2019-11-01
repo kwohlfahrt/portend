@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+# -*- coding: future-fstrings -*-
 
 """
 A simple library for managing the availability of ports.
@@ -225,6 +225,13 @@ class HostPort(str):
     @property
     def port(self):
         return urllib.parse.urlparse(f'//{self}').port
+
+    @classmethod
+    def from_addr(cls, addr):
+        listen_host, port = addr[:2]
+        plain_host = client_host(listen_host)
+        host = f'[{plain_host}]' if ':' in plain_host else plain_host
+        return cls(':'.join([host, str(port)]))
 
 
 def _main(args=None):
